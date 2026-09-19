@@ -26,7 +26,7 @@
   <header class="topbar">
     <h1>Budgeteer</h1>
     <div class="topbar-actions">
-      <button class="icon-btn" id="settings-btn" title="Recurring bills, income &amp; starting balance">⚙</button>
+      <button class="icon-btn" id="settings-btn" title="Starting balance">⚙</button>
       <button class="icon-btn" id="lock-btn" title="Lock">🔒</button>
     </div>
   </header>
@@ -34,9 +34,10 @@
   <div class="balance-hero">
     <div class="balance-label">Current balance</div>
     <div class="balance-amount" id="current-balance">$0.00</div>
+    <div class="balance-hint">Updates automatically as each bill's date arrives &mdash; everything's on autopay.</div>
     <div class="balance-stats">
       <div class="stat">
-        <div class="stat-label"><span class="dot expense"></span>Coming out this week</div>
+        <div class="stat-label"><span class="dot expense"></span>Total bills this week</div>
         <div class="stat-value" id="week-out">$0.00</div>
       </div>
       <div class="stat">
@@ -44,17 +45,35 @@
         <div class="stat-value" id="week-in">$0.00</div>
       </div>
       <div class="stat">
-        <div class="stat-label">Projected end of week</div>
+        <div class="stat-label">End of week balance</div>
         <div class="stat-value" id="week-projected">$0.00</div>
       </div>
     </div>
     <div id="chart-wrap"><canvas id="balance-chart"></canvas></div>
   </div>
 
-  <div class="add-card">
-    <h2>Add an item</h2>
-    <div class="modal-sub">One-off expense or income on a specific date. For bills that repeat every month, add them as <strong>Recurring</strong> in settings (⚙) instead.</div>
-    <div class="chip-row" id="category-chips"></div>
+  <div class="grid-card">
+    <div class="grid-card-head">
+      <div class="grid-card-head-row">
+        <h2>Weekly ledger</h2>
+        <button class="btn-toggle-columns" id="toggle-columns-btn" type="button">Show all bills</button>
+      </div>
+      <div class="modal-sub">Bill amounts are fixed. The Extra / Other columns are editable inline, or use "Add a one-off item" below.</div>
+    </div>
+    <div class="table-scroll">
+      <table id="ledger-table">
+        <thead id="ledger-thead"></thead>
+        <tbody id="ledger-tbody"></tbody>
+      </table>
+    </div>
+    <button class="btn-show-more" id="show-more-weeks">Show 12 more weeks</button>
+  </div>
+
+  <div class="grid-card">
+    <div class="grid-card-head">
+      <h2>Add a one-off item</h2>
+      <div class="modal-sub">For anything outside the fixed bills above &mdash; shows up in that week's Extra / Other column, and is listed below.</div>
+    </div>
     <div class="add-form">
       <div class="type-toggle full">
         <button type="button" data-type="expense" class="active">Expense</button>
@@ -72,16 +91,12 @@
         <label for="txn-date">Date</label>
         <input id="txn-date" type="date" />
       </div>
-      <div class="full paid-check-row">
-        <label><input type="checkbox" id="txn-paid" /> Mark as already paid, even though the date above is in the future</label>
-      </div>
       <div class="submit-row">
         <button class="btn-add" id="add-txn-btn">Add</button>
       </div>
     </div>
+    <div id="other-list" class="other-list"></div>
   </div>
-
-  <div id="ledger"></div>
 </div>
 
 <div id="toast"></div>
@@ -91,26 +106,11 @@
   <div class="modal">
     <button class="modal-close" id="settings-close">×</button>
     <h2>Starting balance</h2>
-    <div class="modal-sub">Your real bank balance as of today. Recurring bills/income are projected forward from here.</div>
+    <div class="modal-sub">Your real bank balance as of today. Saving this resets the "as of" point that everything projects forward from.</div>
     <div class="setting-row">
       <label for="starting-balance">Starting balance</label>
       <input id="starting-balance" type="number" step="0.01" />
     </div>
-
-    <h2>Recurring bills &amp; income</h2>
-    <div class="modal-sub">Give a day of the month it's due/received and an amount, and it'll show up on the calendar every month automatically. Edit any single month's entry directly in the ledger if the amount changes.</div>
-    <div id="category-list"></div>
-    <div class="add-cat-row cat-add-grid">
-      <input id="new-cat-name" type="text" placeholder="Name (e.g. Rent)" />
-      <input id="new-cat-amount" type="number" step="0.01" min="0" placeholder="Amount" />
-      <input id="new-cat-day" type="number" min="1" max="31" placeholder="Day (1-31)" />
-      <select id="new-cat-type">
-        <option value="expense">Expense</option>
-        <option value="income">Income</option>
-      </select>
-      <button id="add-cat-btn">Add</button>
-    </div>
-
     <button class="fab-save" id="settings-save">Save</button>
   </div>
 </div>

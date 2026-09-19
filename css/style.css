@@ -141,7 +141,7 @@ input, select {
 
 /* ---------- App shell ---------- */
 #app {
-  max-width: 760px;
+  max-width: 1180px;
   margin: 0 auto;
   padding: 20px 16px 100px;
 }
@@ -249,53 +249,27 @@ header.topbar h1 {
   height: 120px;
 }
 
-/* ---------- Quick add ---------- */
-.add-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 18px;
-  margin-bottom: 22px;
+.balance-hint {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  margin-top: 6px;
 }
 
-.add-card h2 {
-  font-size: 0.95rem;
-  margin: 0 0 12px;
-}
-
-.chip-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.chip {
-  border: 1px solid var(--border);
-  background: var(--surface-2);
-  color: var(--text);
-  border-radius: 999px;
-  padding: 7px 13px;
-  font-size: 0.82rem;
-}
-.chip:hover { border-color: var(--accent); }
-
+/* ---------- Add one-off item ---------- */
 .add-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  margin-bottom: 8px;
 }
-
 .add-form .full { grid-column: 1 / -1; }
-
 .add-form label {
   font-size: 0.75rem;
   color: var(--text-dim);
   display: block;
   margin-bottom: 4px;
 }
-
-.add-form input, .add-form select {
+.add-form input {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -304,7 +278,6 @@ header.topbar h1 {
   color: var(--text);
   font-size: 0.95rem;
 }
-
 .type-toggle {
   display: flex;
   border-radius: 8px;
@@ -322,31 +295,12 @@ header.topbar h1 {
 }
 .type-toggle button.active[data-type="expense"] { background: var(--expense-bg); color: var(--expense); }
 .type-toggle button.active[data-type="income"] { background: var(--income-bg); color: var(--income); }
-
-.paid-check-row {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  display: flex;
-  align-items: center;
-}
-.paid-check-row label {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  cursor: pointer;
-}
-.paid-check-row input {
-  width: auto;
-  margin-top: 2px;
-}
-
 .add-form .submit-row {
   grid-column: 1 / -1;
   display: flex;
   justify-content: flex-end;
   margin-top: 4px;
 }
-
 .btn-add {
   padding: 10px 22px;
   border-radius: 8px;
@@ -356,133 +310,39 @@ header.topbar h1 {
   font-weight: 600;
 }
 
-/* ---------- Ledger ---------- */
-.week-group {
-  margin-bottom: 18px;
+.other-list {
+  border-top: 1px solid var(--border);
+  margin-top: 14px;
+  padding-top: 6px;
 }
-
-.week-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 4px 6px 8px;
-}
-
-.week-header .week-range {
-  font-weight: 700;
-  font-size: 0.9rem;
-}
-
-.week-header .week-end-balance {
-  font-size: 0.85rem;
-  color: var(--text-dim);
-  font-variant-numeric: tabular-nums;
-}
-
-.week-card {
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
-.txn-row {
+.other-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
+  gap: 10px;
+  padding: 10px 2px;
   border-bottom: 1px solid var(--border);
 }
-.txn-row:last-child { border-bottom: none; }
-
-.txn-icon {
-  width: 34px; height: 34px;
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.txn-icon.income { background: var(--income-bg); color: var(--income); }
-.txn-icon.expense { background: var(--expense-bg); color: var(--expense); }
-
-.txn-check {
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  cursor: pointer;
-}
-
-.txn-main {
-  flex: 1;
-  min-width: 0;
-}
-.txn-desc {
-  font-size: 0.92rem;
+.other-row:last-child { border-bottom: none; }
+.other-main { flex: 1; min-width: 0; }
+.other-desc {
+  font-size: 0.9rem;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.txn-meta {
+.other-meta {
   font-size: 0.75rem;
   color: var(--text-dim);
   margin-top: 1px;
 }
-
-.txn-pending-badge {
-  display: inline-block;
-  font-size: 0.65rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  color: var(--accent);
-  background: var(--accent-dim);
-  padding: 1px 6px;
-  border-radius: 5px;
-  margin-left: 6px;
-}
-
-.txn-amount-input {
-  width: 84px;
-  text-align: right;
-  border: 1px solid transparent;
-  background: transparent;
-  color: inherit;
+.other-amount {
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  font-size: 0.95rem;
-  border-radius: 6px;
-  padding: 2px 4px;
+  font-size: 0.9rem;
 }
-.txn-amount-input:focus {
-  outline: none;
-  border-color: var(--border);
-  background: var(--surface-2);
-}
-
-.txn-right {
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.txn-amount {
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  font-size: 0.95rem;
-}
-.txn-amount.income { color: var(--income); }
-.txn-amount.expense { color: var(--expense); }
-
-.txn-running {
-  font-size: 0.72rem;
-  color: var(--text-dim);
-  font-variant-numeric: tabular-nums;
-  margin-top: 1px;
-}
-
+.other-amount.income { color: var(--income); }
+.other-amount.expense { color: var(--expense); }
 .txn-del {
   border: none;
   background: transparent;
@@ -492,6 +352,176 @@ header.topbar h1 {
   opacity: 0.5;
 }
 .txn-del:hover { opacity: 1; color: var(--expense); }
+
+/* ---------- Weekly grid ---------- */
+.grid-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 22px;
+}
+
+.grid-card-head {
+  margin-bottom: 12px;
+}
+
+.grid-card-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.grid-card-head h2 {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.btn-toggle-columns {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.btn-toggle-columns:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.grid-card .modal-sub {
+  margin: 0;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.btn-show-more {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.btn-show-more:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.btn-show-more.hidden { display: none; }
+
+#ledger-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+#ledger-table th, #ledger-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  text-align: right;
+}
+
+#ledger-table th:first-child, #ledger-table td:first-child {
+  text-align: left;
+}
+
+#ledger-table th {
+  background: var(--surface-2);
+  color: var(--text-dim);
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+#ledger-table th.col-income { color: var(--income); }
+#ledger-table th.col-expense { color: var(--expense); }
+
+#ledger-table td:first-child, #ledger-table th:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+#ledger-table th:first-child { z-index: 3; background: var(--surface-2); }
+
+#ledger-table tr.row-current td {
+  background: var(--accent-dim);
+}
+#ledger-table tr.row-current td:first-child {
+  background: var(--accent-dim);
+}
+
+.cell-date {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.cell-date .cell-sub {
+  display: block;
+  font-weight: 400;
+  color: var(--text-dim);
+  font-size: 0.7rem;
+}
+
+.cell-input {
+  width: 72px;
+  text-align: right;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  border-radius: 6px;
+  padding: 3px 4px;
+}
+.cell-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+.cell-input.income-cell { color: var(--income); }
+.cell-input.expense-cell { color: var(--expense); }
+
+.cell-computed {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.cell-computed.negative { color: var(--expense); }
+
+.cell-bill {
+  cursor: pointer;
+  border-radius: 4px;
+}
+.cell-bill:hover {
+  background: var(--surface-2);
+}
+.cell-bill.cleared-early {
+  text-decoration: line-through;
+  color: var(--text-dim);
+}
+.cell-bill.cleared-early::after {
+  content: " ✓";
+  text-decoration: none;
+  color: var(--income);
+}
 
 .empty-state {
   text-align: center;
