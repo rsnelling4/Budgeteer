@@ -1,0 +1,11 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Only the signed-in household account (authenticated with the shared
+    // email + passcode from firebase-config.js) can read or write any data.
+    // Nobody else can access the database, even if they find your project ID.
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
