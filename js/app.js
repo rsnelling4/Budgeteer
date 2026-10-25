@@ -67,7 +67,11 @@ const db = getFirestore(fbApp);
 
 const $ = (sel) => document.querySelector(sel);
 const money = (n) => (n < 0 ? "-$" + Math.abs(n).toFixed(2) : "$" + n.toFixed(2));
-const todayISO = () => new Date().toISOString().slice(0, 10);
+// Local-calendar ISO date. (toISOString() is UTC, which flips to "tomorrow" every evening in
+// the Americas and shifts week boundaries / bill dates by a day.)
+const localISO = (d) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const todayISO = () => localISO(new Date());
 
 function showToast(msg) {
   const t = $("#toast");
@@ -93,7 +97,7 @@ function addDays(date, n) {
   return d;
 }
 function dateToISO(d) {
-  return d.toISOString().slice(0, 10);
+  return localISO(d);
 }
 function clampDay(year, month, day) {
   const lastDay = new Date(year, month + 1, 0).getDate();
@@ -158,10 +162,31 @@ async function unlock() {
   try {
     await signInWithEmailAndPassword(auth, SHARED_EMAIL, PASSCODE_SALT + pin);
   } catch (e) {
-    errEl.textContent = "Incorrect passcode.";
+    console.error("Sign-in failed:", e.code, e.message);
+    errEl.textContent = signInErrorMessage(e);
   } finally {
     btn.disabled = false;
     btn.textContent = "Unlock";
+  }
+}
+
+function signInErrorMessage(e) {
+  switch (e.code) {
+    case "auth/invalid-credential":
+    case "auth/wrong-password":
+    case "auth/user-not-found":
+    case "auth/invalid-email":
+      return "Incorrect passcode.";
+    case "auth/too-many-requests":
+      return "Too many attempts. Wait a few minutes and try again.";
+    case "auth/network-request-failed":
+      return "Can't reach the server. Check your connection and try again.";
+    case "auth/unauthorized-domain":
+      return "This site's address isn't authorized in Firebase (Authentication → Settings → Authorized domains).";
+    case "auth/operation-not-allowed":
+      return "Email/Password sign-in isn't enabled in Firebase.";
+    default:
+      return "Couldn't sign in (" + (e.code || e.message) + ").";
   }
 }
 
@@ -432,16 +457,20 @@ function computeWeeks(throughFriday) {
 // entries typed inline, which count the moment they're entered (see `immediate` flag below).
 function computeCurrentBalance(weeks, todayISOStr) {
   let balance = startingBalance;
+  // startingBalance is the real bank balance as of trackingStart, so anything dated on or
+  // before it is already baked in — counting it again (e.g. the first week's Friday paycheck,
+  // or bills earlier in that week) would double-count.
+  const counts = (date, clearedEarly) => date > trackingStart && (date <= todayISOStr || clearedEarly);
   weeks.forEach((w) => {
     INCOME_CATS.forEach((cat) => {
       const date = occurrenceInWeek(cat, w.friday);
       const clearedEarly = clearedEarlySet.has(clearedEarlyKey(cat.name, w.key));
-      if (date && (date <= todayISOStr || clearedEarly)) balance += cat.amount;
+      if (date && counts(date, clearedEarly)) balance += cat.amount;
     });
     EXPENSE_CATS.forEach((cat) => {
       const date = occurrenceInWeek(cat, w.friday);
       const clearedEarly = clearedEarlySet.has(clearedEarlyKey(cat.name, w.key));
-      if (date && (date <= todayISOStr || clearedEarly)) balance -= cat.amount;
+      if (date && counts(date, clearedEarly)) balance -= cat.amount;
     });
     w.otherIncome.forEach((t) => {
       if (t.immediate || t.date <= todayISOStr) balance += t.amount;
